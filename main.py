@@ -1,4 +1,4 @@
-from expense_class import Expense, Income, Account_per_month
+from expense_classes import Expense, Income, Account_per_month
 
 oct = Account_per_month(10)
 
