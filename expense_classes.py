@@ -1,18 +1,16 @@
 from datetime import datetime
 from collections import UserList
 import json
-from fields import *
+from fields import Amount, IncomeCategory, User, ExpenseCategory, Month
 
 
 class Expense:
-    def __init__(self, amount, category, user, month=None) -> None:
-    
+    def __init__(self, amount, category, user, month=None) -> None: 
         self.amount = Amount(amount)
         self.category : ExpenseCategory = ExpenseCategory(category)
         if month != None:
             self.month = Month(month)
-        self.user = User(user)
-    
+        self.user = User(user)   
     def edit_expense(self, new_data):
         # need to write a method 
         pass
@@ -26,8 +24,7 @@ class Expense:
 
 
 class Income:
-    def __init__(self, amount, category, user, month=None) -> None:
-        
+    def __init__(self, amount, category, user, month=None) -> None:    
         self.amount = Amount(amount)
         self.category  = IncomeCategory(category)
         self.month = Month(month)
@@ -39,8 +36,7 @@ class Income:
 
     @classmethod
     def from_dict(cls, data):
-        return cls(data['amount'], data['category'], data['date'])
-    
+        return cls(data['amount'], data['category'], data['date']) 
     def __str__(self):
         return f"Amount: {self.amount}, Category: {self.category}, Month: {self.month}"
 
@@ -61,11 +57,10 @@ class Registry(UserList):
 class Account_per_month:
     def __init__(self, month):
         self.month = Month(month)
-        self.registry = Registry([],month)
-    
+        self.registry = Registry([],month) 
     def add_expense(self, expense: Expense):
         if expense.month == None:
-                expense.month = self.month
+            expense.month = self.month
         if expense.month.value != self.month.value:
             raise ValueError("Expense from a different month cannot be added to the account")
         self.registry.append({
@@ -73,8 +68,7 @@ class Account_per_month:
              "amount": expense.amount.value,
              "category": expense.category.value,
              "month": expense.month.value,
-             "user": expense.user.value})
-        
+             "user": expense.user.value})        
 
     def add_income(self, income: Income):
         if income.month == None:
