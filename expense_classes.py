@@ -27,7 +27,8 @@ class Income:
     def __init__(self, amount, category, user, month=None) -> None:    
         self.amount = Amount(amount)
         self.category  = IncomeCategory(category)
-        self.month = Month(month)
+        if month != None:
+            self.month = Month(month)
         self.user = User(user)
 
     def edit_income(self, new_data):
@@ -57,7 +58,13 @@ class Registry(UserList):
 class Account_per_month:
     def __init__(self, month):
         self.month = Month(month)
-        self.registry = Registry([],month) 
+        self.registry = Registry([],self.month)
+        self.balance = 0 
+    def __add__(self,other):
+        return self.balance + other.balance
+    def __sub__(self,other):
+        return self.balance - other.balance
+    
     def add_expense(self, expense: Expense):
         if expense.month == None:
             expense.month = self.month
@@ -68,7 +75,9 @@ class Account_per_month:
              "amount": expense.amount.value,
              "category": expense.category.value,
              "month": expense.month.value,
-             "user": expense.user.value})        
+             "user": expense.user.value})
+        self.save_registry("./cache/registry"+str(self.month))        
+        self.check_balance()        
 
     def add_income(self, income: Income):
         if income.month == None:
@@ -81,20 +90,25 @@ class Account_per_month:
              "category": income.category.value,
              "month": income.month.value,
              "user": income.user.value})
+        self.save_registry(f"./cache/registry{str(self.month)}.json")
+        self.check_balance()
 
 
     def save_registry(self, file_path):
-        return self.registry.save_to_json(file_path)
+        self.registry.save_to_json(file_path)
+
+    def load_registry(self, file_path):
+        with open(file_path, "r") as json_file:
+            data = json.load(json_file)
+            self.month = Month(data["month"])
+            self.registry = Registry(data["registry"], self.month)
+        self.check_balance()
     
-    def balance(self):
+    def check_balance(self):
         res = 0
         for item in self.registry:
             if item["type"] == "income":
                 res += item["amount"]
             elif item["type"] == "expense":
                 res -= item["amount"]
-        return res
-
-
-
-        
+        self.balance = res

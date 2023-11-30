@@ -1,4 +1,18 @@
 from expense_classes import *
+from financial_app import FinancialApp
 
-while True:
-    pass
+
+
+def main():
+    while True:
+        financialapp = FinancialApp()
+
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    main()
